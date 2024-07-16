@@ -3,6 +3,7 @@ import {
   concat,
   fromEvent,
   interval,
+  merge,
   noop,
   Observable,
   Observer,
@@ -26,5 +27,12 @@ export class AboutComponent implements OnInit {
     // const course3$ = of(7, 8, 9);
     // const courses$ = concat(course1$, course2$, course3$)
     // courses$.subscribe(console.log);
+
+    const interval1$ = interval(1000);
+    const interval2$ = interval1$.pipe(map(val => 10 * val));
+    // interval1$.subscribe(console.log);
+    // interval2$.subscribe(console.log);
+    const mergedInterval$ = merge(interval1$, interval2$);
+    // mergedInterval$.subscribe(console.log);
   }
 }
