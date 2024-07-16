@@ -32,11 +32,16 @@ export class AboutComponent implements OnInit {
     // timer(delay, interval) observable
     const interval2$ = timer(3000, 1000);
     // stream for click event observable
-    const click$ = fromEvent(document, 'click');
+    const click$ = fromEvent(document, "click");
 
     // interval$ is an observable
-    // interval2$.subscribe((val) => console.log("stream 1: ", val));
+    const sub = interval2$.subscribe((val) => console.log("stream 1: ", val));
+    setTimeout(()=>{sub.unsubscribe()}, 5000)
     // interval2$.subscribe((val) => console.log("stream 2: ", val));
-    // click$.subscribe(event => console.log(event));
+    click$.subscribe(
+      (event) => console.log(event),
+      (err) => console.log(err),
+      () => console.log("completed")
+    );
   }
 }
