@@ -27,16 +27,10 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     const http$ = createHttpObservable("/api/courses");
     const courses$: Observable<Course[]> = http$.pipe(
-      catchError((err) => {
-        console.log("Error occured: ", err);
-        return throwError(err); //this utility method will create Observable that will errors out immediately, without emmiting any values
-      }),
-      finalize(() => {
-        console.log("finalize executed...");
-      }),
       tap(() => console.log("http request sent")), // this rxjs operator help to update something outside of observable
       map((res) => Object.values(res["payload"])),
       shareReplay(), //this rxjs operator help us to share our excution to other subscriber
+      retryWhen((errors) => errors.pipe(delayWhen(() => timer(2000)))) //this will retry the fetch after 2 seconds, sequencually until fetch succeded
     );
     this.beginnerCourses$ = courses$.pipe(
       map((courses) =>
