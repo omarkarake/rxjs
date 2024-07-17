@@ -52,9 +52,9 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.form.valueChanges
       .pipe(
-        filter(() => this.form.valid),// this is going only to render the valid input
-        mergeMap((changes) => this.saveCourse(changes))
-      ) 
+        filter(() => this.form.valid), // this is going only to render the valid input
+        concatMap((changes) => this.saveCourse(changes))
+      )
       .subscribe();
   }
 
@@ -70,7 +70,11 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
     );
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    fromEvent(this.saveButton.nativeElement, "click")
+      .pipe(exhaustMap(() => this.saveCourse(this.form.value))) // using exhaustMap will make the click event only sending 1 click even if we repeatedly click it like 10 times in row
+      .subscribe();
+  }
 
   close() {
     this.dialogRef.close();
