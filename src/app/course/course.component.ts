@@ -51,7 +51,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
       this.lessons$ = fromEvent<any>(this.input.nativeElement, "keyup")
       .pipe(
         map((e) => e.target.value),
-        startWith(''), // works similary as concat but with less codes
+        startWith(''), // works similary as concat but with less codes, will triggle the loadLessons first
         debounceTime(400),
         distinctUntilChanged(),
         switchMap((search) => this.loadLessons(search))
