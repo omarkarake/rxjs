@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Course } from "../model/course";
-import { interval, noop, Observable, of, timer } from "rxjs";
+import { interval, noop, Observable, of, throwError, timer } from "rxjs";
 import {
   catchError,
   delayWhen,
@@ -9,6 +9,7 @@ import {
   shareReplay,
   tap,
   filter,
+  finalize,
 } from "rxjs/operators";
 import { createHttpObservable } from "../common/util";
 
@@ -26,25 +27,16 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     const http$ = createHttpObservable("/api/courses");
     const courses$: Observable<Course[]> = http$.pipe(
+      catchError((err) => {
+        console.log("Error occured: ", err);
+        return throwError(err); //this utility method will create Observable that will errors out immediately, without emmiting any values
+      }),
+      finalize(() => {
+        console.log("finalize executed...");
+      }),
       tap(() => console.log("http request sent")), // this rxjs operator help to update something outside of observable
       map((res) => Object.values(res["payload"])),
       shareReplay(), //this rxjs operator help us to share our excution to other subscriber
-      catchError((err) =>
-        of([ // of help us to return something when catcherror emited
-          {
-            id: 0,
-            description: "RxJs In Practice Course",
-            iconUrl:
-              "https://s3-us-west-1.amazonaws.com/angular-university/course-images/rxjs-in-practice-course.png",
-            courseListIcon:
-              "https://angular-academy.s3.amazonaws.com/main-logo/main-page-logo-small-hat.png",
-            longDescription:
-              "Understand the RxJs Observable pattern, learn the RxJs Operators via practical examples",
-            category: "BEGINNER",
-            lessonsCount: 10,
-          },
-        ])
-      )
     );
     this.beginnerCourses$ = courses$.pipe(
       map((courses) =>
