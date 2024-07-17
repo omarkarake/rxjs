@@ -13,13 +13,14 @@ export function getAllCourses(req: Request, res: Response) {
     if (error) {
         console.log("ERROR loading courses!");
         res.status(500).json({message: 'random error occurred.'});
-    }
-    else {
-    */
-
-    setTimeout(() => {
-
-        res.status(200).json({payload:Object.values(COURSES)});
+        }
+        else {
+            */
+           
+           setTimeout(() => {
+               
+               res.status(500).json({message: 'random error occurred.'});
+        // res.status(200).json({payload:Object.values(COURSES)});
 
     }, 200);
 
