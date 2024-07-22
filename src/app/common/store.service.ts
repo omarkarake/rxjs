@@ -14,6 +14,7 @@ import {
   tap,
 } from "rxjs/operators";
 import { createHttpObservable } from "../common/util";
+import { fromPromise } from "rxjs/internal-compatibility";
 
 @Injectable({
   providedIn: "root", // means that there is only one store in the whole application
@@ -42,5 +43,23 @@ export class Store {
     return this.courses$.pipe(
       map((courses) => courses.filter((course) => course.category == category))
     );
+  }
+
+  saveCourse(courseId: number, changes): Observable<any> {
+    const courses = this.subject.getValue();
+    const courseIndex = courses.findIndex((course) => course.id == courseId);
+    const newCourses = courses.slice(0);
+    newCourses[courseIndex] = {
+      ...courses[courseIndex],
+      ...changes,
+    };
+    this.subject.next(newCourses);
+    return fromPromise(fetch(`/api/courses/${courseId}`, {
+        method: 'PUT',
+        body: JSON.stringify(changes),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }));
   }
 }
