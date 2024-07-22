@@ -12,6 +12,7 @@ This course repository is updated to Angular v18:
 
 Please use Node 18 LTS (Long Term Support version).
 
+
 # Installing the Angular CLI
 
 With the following command the angular-cli will be installed globally in your machine:
