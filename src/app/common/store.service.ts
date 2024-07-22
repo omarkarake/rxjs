@@ -39,6 +39,12 @@ export class Store {
     return this.filterByCategory("ADVANCED");
   }
 
+  selectCourseById(courseId: number) {
+    return this.courses$.pipe(
+      map((courses) => courses.find((course) => course.id == courseId))
+    );
+  }
+
   filterByCategory(category: string) {
     return this.courses$.pipe(
       map((courses) => courses.filter((course) => course.category == category))
@@ -54,12 +60,14 @@ export class Store {
       ...changes,
     };
     this.subject.next(newCourses);
-    return fromPromise(fetch(`/api/courses/${courseId}`, {
-        method: 'PUT',
+    return fromPromise(
+      fetch(`/api/courses/${courseId}`, {
+        method: "PUT",
         body: JSON.stringify(changes),
         headers: {
-            'content-type': 'application/json'
-        }
-    }));
+          "content-type": "application/json",
+        },
+      })
+    );
   }
 }
