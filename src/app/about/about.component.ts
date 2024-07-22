@@ -35,9 +35,9 @@ export class AboutComponent implements OnInit {
 
     subject.complete(); // this have to be set
 
-    // setTimeout(() => {
-    //     series$.subscribe(val => console.log('late sub: ' + val));
-    //     subject.next(4);
-    // });
+    setTimeout(() => {
+        series$.subscribe(val => console.log('late sub: ' + val));
+        subject.next(4);
+    });
   }
 }
