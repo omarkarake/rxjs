@@ -35,6 +35,24 @@ export class AboutComponent implements OnInit {
     // subject.complete(); // if set will not trigger the late sub
 
     setTimeout(() => {
+        // if subject.complete() called before setTimeOut we would have:
+        /*
+            early sub: 0
+            early sub: 1
+            early sub: 2
+            early sub: 3
+        */
+       // if subject.complete() not called
+       /*
+            early sub: 0
+            early sub: 1
+            early sub: 2
+            early sub: 3
+            late sub: 3
+            early sub: 4
+            late sub: 4
+       */
+        
         series$.subscribe(val => console.log('late sub: ' + val));
         subject.next(4);
     });
