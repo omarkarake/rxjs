@@ -11,6 +11,7 @@ import {
   merge,
   Subject,
   BehaviorSubject,
+  AsyncSubject,
 } from "rxjs";
 import { delayWhen, filter, map, take, timeout } from "rxjs/operators";
 import { createHttpObservable } from "../common/util";
@@ -22,7 +23,7 @@ import { createHttpObservable } from "../common/util";
 })
 export class AboutComponent implements OnInit {
   ngOnInit() {
-    const subject = new BehaviorSubject(0); // initial value
+    const subject = new AsyncSubject(); // will get last emit which is 3, because it's used for long running calculations
     // subject can be observable or observer
     const series$ = subject.asObservable();
     // series$ will be an observable
@@ -30,31 +31,13 @@ export class AboutComponent implements OnInit {
 
     subject.next(1);
     subject.next(2);
-    subject.next(3);
+    subject.next(3); // will log only this
 
-    // subject.complete(); // if set will not trigger the late sub
+    subject.complete(); // this have to be set
 
-    setTimeout(() => {
-        // if subject.complete() called before setTimeOut we would have:
-        /*
-            early sub: 0
-            early sub: 1
-            early sub: 2
-            early sub: 3
-        */
-       // if subject.complete() not called
-       /*
-            early sub: 0
-            early sub: 1
-            early sub: 2
-            early sub: 3
-            late sub: 3
-            early sub: 4
-            late sub: 4
-       */
-        
-        series$.subscribe(val => console.log('late sub: ' + val));
-        subject.next(4);
-    });
+    // setTimeout(() => {
+    //     series$.subscribe(val => console.log('late sub: ' + val));
+    //     subject.next(4);
+    // });
   }
 }
